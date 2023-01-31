@@ -12,7 +12,3 @@ I create my github account for sharing about my knowledge and idea
 - 🏡 Work From Home
 - 👨‍👩‍👧 Was married and having one children
 - 🐧 Coding with linux
-
-### 🕵️‍ Some more stats on GitHub
-[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=arisris&theme=dark&bg_color=121212)](https://github.com/arisris)
-![Arisris github stats](https://github-readme-stats.vercel.app/api?username=arisris&show_icons=true&theme=dark&bg_color=121212&icon_color=F78C6C)
