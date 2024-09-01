@@ -1,0 +1,8 @@
+# Paths
+node_modules/
+.astro/
+.vscode/.bak
+.wrangler/
+
+# Files
+.env
