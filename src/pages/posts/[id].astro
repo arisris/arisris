@@ -1,0 +1,87 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getEntry, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const { getCollection } = await import("astro:content");
+  const posts = await getCollection("posts", ({ data }) => data.status === "published");
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+// Fetch author info (assuming ID matches what's in the post's author reference)
+// In Astro 5, reference() fields store the ID.
+const authorEntry = await getEntry("author", "author");
+---
+
+<Layout title={`${post.data.title} — Arisris`} description={post.data.description}>
+  <article class="max-w-3xl mx-auto py-12 md:py-20 space-y-10">
+    {/* Post Header */}
+    <header class="space-y-6">
+      <div class="flex flex-wrap items-center gap-2 text-xs font-black uppercase tracking-widest text-blue-600 dark:text-blue-500">
+        <a href="/posts" class="hover:underline">Posts</a>
+        <span>/</span>
+        {post.data.tags?.map(tag => (
+          <a href={`/tags/${tag}`} class="hover:underline">#{tag}</a>
+        ))}
+      </div>
+      
+      <h1 class="text-4xl md:text-6xl font-bold font-outfit leading-tight text-neutral-900 dark:text-neutral-50">
+        {post.data.title}
+      </h1>
+
+      <div class="flex items-center gap-4 py-6 border-y border-neutral-100 dark:border-neutral-800">
+        <img 
+          src={authorEntry?.data.avatar || "/favicon.svg"} 
+          alt={authorEntry?.data.name} 
+          class="size-12 rounded-full border border-neutral-200 dark:border-neutral-800"
+        />
+        <div class="flex flex-col">
+          <span class="font-bold text-neutral-900 dark:text-neutral-50">{authorEntry?.data.name}</span>
+          <span class="text-xs text-neutral-500">
+            {post.data.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            {post.data.updatedAt && ` (Updated: ${post.data.updatedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })})`}
+          </span>
+        </div>
+      </div>
+    </header>
+
+    {/* Hero Image */}
+    <div class="aspect-video rounded-3xl overflow-hidden shadow-2xl border border-neutral-200 dark:border-neutral-800">
+      <img 
+        src={post.data.image} 
+        alt={post.data.title} 
+        class="w-full h-full object-cover"
+      />
+    </div>
+
+    {/* Content */}
+    <main class="prose prose-neutral dark:prose-invert prose-lg max-w-none 
+      prose-headings:font-outfit prose-headings:font-bold prose-headings:tracking-tight
+      prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
+      prose-img:rounded-2xl prose-img:border prose-img:border-neutral-200 dark:prose-img:border-neutral-800">
+      <Content />
+    </main>
+
+    {/* Footer / Sharing (Simplified) */}
+    <footer class="pt-12 mt-12 border-t border-neutral-100 dark:border-neutral-800 flex justify-between items-center">
+      <a href="/posts" class="flex items-center gap-2 text-sm font-bold text-neutral-500 hover:text-blue-600 transition-colors">
+        <span class="iconify ri--arrow-left-line"></span>
+        Back to articles
+      </a>
+      <div class="flex gap-4">
+        <button class="text-neutral-400 hover:text-blue-400 transition-colors" title="Share on Twitter">
+          <span class="iconify ri--twitter-x-fill size-5"></span>
+        </button>
+        <button class="text-neutral-400 hover:text-blue-600 transition-colors" title="Copy Link">
+          <span class="iconify ri--link size-5"></span>
+        </button>
+      </div>
+    </footer>
+  </article>
+</Layout>

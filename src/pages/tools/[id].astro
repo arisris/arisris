@@ -1,0 +1,47 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { tools } from "../../data/tools";
+import Base64Tool from "../../components/tools/Base64Tool.astro";
+
+// Pre-render static paths (default behavior for static output, explicitly ensuring dynamic routes work)
+export function getStaticPaths() {
+  return tools.map(tool => ({
+    params: { id: tool.id },
+    props: { tool },
+  }));
+}
+
+const { tool } = Astro.props;
+---
+
+<Layout title={`${tool.name} - Online Tools | Aris Riswanto`} description={tool.description}>
+  <div class="max-w-4xl mx-auto py-12 md:py-24 space-y-12">
+    <header class="border-b border-neutral-100 dark:border-neutral-800 pb-8 flex flex-col items-start gap-4">
+      <a href="/tools" class="inline-flex items-center gap-2 text-sm font-medium text-neutral-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+        <span class="iconify ri--arrow-left-line size-4"></span>
+        Back to Tools
+      </a>
+      <div class="space-y-4">
+        <h1 class="text-3xl md:text-4xl font-bold tracking-tight font-outfit text-neutral-900 dark:text-neutral-50 flex items-center gap-3">
+          <div class="size-10 rounded-lg bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
+            <span class={`iconify ${tool.icon} size-5`}></span>
+          </div>
+          {tool.name}
+        </h1>
+        <p class="text-lg text-neutral-500 dark:text-neutral-400">
+          {tool.description}
+        </p>
+      </div>
+    </header>
+
+    <main class="min-h-[400px]">
+      {tool.id === 'base64' && <Base64Tool />}
+      {/* Fallback for components that might not be built yet */}
+      {tool.id !== 'base64' && (
+        <div class="p-8 text-center rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800">
+          <p class="text-neutral-500 dark:text-neutral-400">This tool is under construction.</p>
+        </div>
+      )}
+    </main>
+  </div>
+</Layout>

@@ -1,0 +1,102 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getEntry, render } from "astro:content";
+
+const authorEntry = await getEntry("author", "author");
+const { Content } = authorEntry ? await render(authorEntry) : { Content: null };
+
+const skills = [
+  { name: "Frameworks", items: ["Astro", "SvelteKit", "Next.js", "Hono"] },
+  { name: "Frontend", items: ["TypeScript", "Tailwind 4", "React", "Alpine.js"] },
+  { name: "Backend", items: ["Node.js", "Cloudflare Workers", "Drizzle", "Prisma"] },
+  { name: "Tools", items: ["Bun", "Vite", "Wrangler", "Git/Linux"] },
+];
+---
+
+<Layout title="About Aris Riswanto" description="Fullstack Jamstack Developer from Indonesia.">
+  <div class="max-w-4xl mx-auto py-12 md:py-24 space-y-16">
+    
+    {/* Page Header */}
+    <header class="border-b border-neutral-100 dark:border-neutral-800 pb-10">
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight font-outfit text-neutral-900 dark:text-neutral-50">
+        About <span class="text-blue-600 dark:text-blue-500">Aris Riswanto</span>
+      </h1>
+      <p class="mt-4 text-lg text-neutral-500 dark:text-neutral-400">
+        Web professional focusing on performance and user experience.
+      </p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+      {/* Sidebar Profile */}
+      <aside class="md:col-span-4 space-y-8">
+        <div class="space-y-6">
+          <img 
+            src={authorEntry?.data.avatar || "/favicon.svg"} 
+            alt="Aris Riswanto" 
+            class="size-40 rounded-2xl object-cover shadow-sm border border-neutral-200 dark:border-neutral-800"
+          />
+          <div class="space-y-4">
+            <div class="flex gap-4">
+              {authorEntry?.data.social?.github && (
+                <a href={authorEntry.data.social.github} class="text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors">
+                  <span class="iconify ri--github-fill size-6"></span>
+                </a>
+              )}
+              {authorEntry?.data.social?.twitter && (
+                <a href={authorEntry.data.social.twitter} class="text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors">
+                  <span class="iconify ri--twitter-x-fill size-6"></span>
+                </a>
+              )}
+              {authorEntry?.data.social?.website && (
+                <a href={authorEntry.data.social.website} class="text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors">
+                  <span class="iconify ri--global-line size-6"></span>
+                </a>
+              )}
+            </div>
+            
+            <div class="pt-4 border-t border-neutral-100 dark:border-neutral-800">
+              <p class="text-xs font-bold text-neutral-400 uppercase tracking-widest">Base</p>
+              <p class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Ciamis, Indonesia 🇮🇩</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      {/* Content Area */}
+      <main class="md:col-span-8 space-y-12">
+        <div class="prose prose-neutral dark:prose-invert prose-lg max-w-none">
+          {Content ? <Content /> : <p>Bio content loading...</p>}
+        </div>
+
+        {/* Technical Arsenal - Minimalist Style */}
+        <section class="space-y-6 pt-10 border-t border-neutral-100 dark:border-neutral-800">
+          <h2 class="text-2xl font-bold font-outfit text-neutral-900 dark:text-neutral-50">Technical Arsenal</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {skills.map(group => (
+              <div class="space-y-3">
+                <h3 class="text-xs font-black text-blue-600 dark:text-blue-500 uppercase tracking-widest">{group.name}</h3>
+                <div class="flex flex-wrap gap-2">
+                  {group.items.map(item => (
+                    <span class="px-2.5 py-1 bg-neutral-100 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 text-xs font-medium rounded-md border border-neutral-200 dark:border-neutral-800">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
+    </div>
+
+    {/* Footer CTA */}
+    <footer class="pt-20 border-t border-neutral-100 dark:border-neutral-800 text-center">
+      <p class="text-neutral-500 dark:text-neutral-500 text-sm mb-6">Interested in working together?</p>
+      <a href="mailto:me@arisris.com" class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold hover:underline group">
+        Send me an email
+        <span class="iconify ri--arrow-right-line group-hover:translate-x-1 transition-transform"></span>
+      </a>
+    </footer>
+
+  </div>
+</Layout>

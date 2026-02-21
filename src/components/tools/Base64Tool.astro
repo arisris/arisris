@@ -1,0 +1,133 @@
+---
+// src/components/tools/Base64Tool.astro
+---
+
+<div class="space-y-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="space-y-2">
+      <label for="input-text" class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Input</label>
+      <textarea
+        id="input-text"
+        rows="8"
+        class="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-4 py-3 text-neutral-900 dark:text-neutral-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all font-mono text-sm resize-y"
+        placeholder="Enter text here..."
+      ></textarea>
+    </div>
+    
+    <div class="space-y-2">
+      <label for="output-text" class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Output</label>
+      <div class="relative">
+        <textarea
+          id="output-text"
+          rows="8"
+          class="w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 px-4 py-3 text-neutral-900 dark:text-neutral-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all font-mono text-sm resize-y"
+          placeholder="Result will appear here..."
+        ></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-4">
+    <button
+      id="btn-encode"
+      class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center gap-2 shadow-sm"
+    >
+      <span class="iconify ri--lock-line"></span>
+      Encode Base64
+    </button>
+    <button
+      id="btn-decode"
+      class="px-6 py-2.5 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-900 dark:text-white font-medium rounded-lg transition-colors flex items-center gap-2 border border-neutral-200 dark:border-neutral-800 shadow-sm"
+    >
+      <span class="iconify ri--lock-unlock-line"></span>
+      Decode Base64
+    </button>
+    
+    <button
+      id="btn-copy"
+      class="md:ml-auto px-4 py-2.5 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-900 dark:text-white font-medium rounded-lg transition-colors flex items-center gap-2 border border-neutral-200 dark:border-neutral-800 shadow-sm"
+    >
+      <span class="iconify ri--file-copy-line"></span>
+      Copy Result
+    </button>
+  </div>
+  
+  <div id="error-message" class="hidden p-4 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-medium border border-red-100 dark:border-red-900/30">
+  </div>
+</div>
+
+<script>
+  function setupBase64Tool() {
+    const input = document.getElementById('input-text') as HTMLTextAreaElement;
+    const output = document.getElementById('output-text') as HTMLTextAreaElement;
+    const btnEncode = document.getElementById('btn-encode');
+    const btnDecode = document.getElementById('btn-decode');
+    const btnCopy = document.getElementById('btn-copy');
+    const errorMsg = document.getElementById('error-message');
+
+    if (!input || !output || !btnEncode || !btnDecode || !btnCopy || !errorMsg) return;
+
+    const showError = (msg: string | null) => {
+      if (msg) {
+        errorMsg.textContent = msg;
+        errorMsg.classList.remove('hidden');
+        output.value = '';
+      } else {
+        errorMsg.classList.add('hidden');
+      }
+    };
+
+    btnEncode.addEventListener('click', () => {
+      try {
+        if (!input.value) {
+          output.value = '';
+          showError(null);
+          return;
+        }
+        showError(null);
+        // Using encodeURIComponent to handle utf-8 before base64
+        const str = input.value;
+        const encoded = btoa(unescape(encodeURIComponent(str)));
+        output.value = encoded;
+      } catch (err: any) {
+        showError('Error encoding text: ' + (err.message || String(err)));
+      }
+    });
+
+    btnDecode.addEventListener('click', () => {
+      try {
+        if (!input.value) {
+          output.value = '';
+          showError(null);
+          return;
+        }
+        showError(null);
+        const str = input.value;
+        const decoded = decodeURIComponent(escape(atob(str)));
+        output.value = decoded;
+      } catch (err) {
+        showError('Invalid Base64 string. Make sure the input is a valid Base64 encoded string.');
+      }
+    });
+
+    btnCopy.addEventListener('click', async () => {
+      if (output.value) {
+        try {
+          await navigator.clipboard.writeText(output.value);
+          const originalHTML = btnCopy.innerHTML;
+          btnCopy.innerHTML = '<span class="iconify ri--check-line"></span> Copied!';
+          setTimeout(() => {
+            btnCopy.innerHTML = originalHTML;
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy text: ', err);
+        }
+      }
+    });
+  }
+
+  // Setup immediately
+  setupBase64Tool();
+  // Setup on page transition (Astro view transitions)
+  document.addEventListener('astro:page-load', setupBase64Tool);
+</script>

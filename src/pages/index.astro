@@ -1,0 +1,171 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getCollection, getEntry } from "astro:content";
+
+// Fetch author data
+const author = await getEntry("author", "author");
+
+// Fetch latest blog posts
+const posts = await getCollection("posts", ({ data }) => {
+  return data.status === "published";
+});
+
+// Sort by date descending
+const latestPosts = posts
+  .sort((a, b) => b.data.createdAt.valueOf() - a.data.createdAt.valueOf())
+  .slice(0, 3);
+
+// Featured projects (references to GitHub stats or just hardcoded from old site)
+const projects = [
+  {
+    name: "AuthWorker",
+    description: "Fullstack authentication solution for Cloudflare Workers.",
+    link: "https://github.com/arisris/auth-worker",
+    tags: ["Hono", "Cloudflare", "Drizzle"],
+  },
+  {
+    name: "Abret",
+    description: "High-performance Svelte documentation engine.",
+    link: "https://github.com/arisris/abret",
+    tags: ["Svelte", "Vite", "Markdown"],
+  },
+  {
+    name: "Next-Toko",
+    description: "Simple E-commerce built with Next.js and Tailwind.",
+    link: "https://github.com/arisris/next-toko",
+    tags: ["Next.js", "Tailwind", "Prisma"],
+  },
+];
+---
+
+<Layout title="Arisris — Personal Blog & Portfolio">
+  {/* Hero Section */}
+  <section class="py-12 md:py-20 border-b">
+    <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+      <div class="md:w-2/3 space-y-6">
+        <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
+          Hi there, I'm <span class="text-blue-600 dark:text-blue-400">Aris Riswanto</span> 👋
+        </h1>
+        <p class="text-lg md:text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl leading-relaxed">
+          A passionate <span class="font-semibold">Jamstack Web Developer</span> from Indonesia. 
+          Building high-performance, secure, and SEO-friendly applications since 2009. 
+          Exploring the future of web development with Astro, Svelte, and Cloudflare.
+        </p>
+        <div class="flex flex-wrap gap-4 pt-4">
+          <a href="/contact" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all shadow-md hover:shadow-lg">
+            Let's Collaborate
+          </a>
+          <a href="https://github.com/arisris" class="px-6 py-3 border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900 font-medium rounded-lg transition-all">
+            View GitHub
+          </a>
+        </div>
+      </div>
+      <div class="md:w-1/3 flex justify-center">
+        <div class="relative group">
+          <div class="absolute -inset-1 bg-linear-to-r from-blue-600 to-indigo-600 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+          <img 
+            src={author?.data.avatar || "/favicon.svg"} 
+            alt="Aris Riswanto" 
+            class="relative size-48 md:size-64 rounded-full object-cover border-4 border-white dark:border-neutral-950 shadow-xl"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* Latest Posts */}
+  <section class="py-12 md:py-16">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-2xl md:text-3xl font-bold">Latest Writing</h2>
+      <a href="/posts" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+        View all posts →
+      </a>
+    </div>
+
+    {latestPosts.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {latestPosts.map((post) => (
+          <article class="group relative flex flex-col bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            <div class="aspect-video overflow-hidden">
+              <img 
+                src={post.data.image} 
+                alt={post.data.title} 
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+            <div class="p-5 flex-1 flex flex-col">
+              <div class="flex items-center gap-2 mb-3 text-xs text-neutral-500 dark:text-neutral-400 font-medium">
+                <time datetime={post.data.createdAt.toISOString()}>
+                  {post.data.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                </time>
+                <span>•</span>
+                <span class="capitalize">{post.data.tags?.[0] || 'Article'}</span>
+              </div>
+              <h3 class="text-xl font-bold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                <a href={`/posts/${post.id}`}>
+                  <span class="absolute inset-0"></span>
+                  {post.data.title}
+                </a>
+              </h3>
+              <p class="text-sm text-neutral-600 dark:text-neutral-400 line-clamp-2 mb-4">
+                {post.data.description}
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <div class="py-8 text-center bg-neutral-50 dark:bg-neutral-900/50 rounded-lg border border-dashed">
+        <p class="text-neutral-500">Coming soon! I'm currently migrating my articles.</p>
+      </div>
+    )}
+  </section>
+
+  {/* Projects */}
+  <section class="py-12 md:py-16 bg-neutral-50 dark:bg-neutral-900/50 -mx-4 px-4 md:-mx-8 md:px-8 border-y border-neutral-100 dark:border-neutral-800">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex items-center justify-between mb-8">
+        <h2 class="text-2xl md:text-3xl font-bold">Open Source Work</h2>
+        <a href="https://github.com/arisris?tab=repositories" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+          More on GitHub →
+        </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {projects.map((project) => (
+          <div class="flex flex-col p-6 bg-white dark:bg-neutral-950 border border-neutral-100 dark:border-neutral-800 rounded-xl hover:border-blue-200 dark:hover:border-blue-900 transition-colors">
+            <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
+              <span class="iconify ri--github-line text-blue-600"></span>
+              <a href={project.link} class="hover:underline">{project.name}</a>
+            </h3>
+            <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4 flex-1">
+              {project.description}
+            </p>
+            <div class="flex flex-wrap gap-2">
+              {project.tags.map(tag => (
+                <span class="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 rounded">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* CTA / About Brief */}
+  <section class="py-16 md:py-24 text-center space-y-8">
+    <div class="max-w-3xl mx-auto space-y-4">
+      <h2 class="text-3xl md:text-4xl font-bold">Interested in working together?</h2>
+      <p class="text-lg text-neutral-600 dark:text-neutral-400">
+        I'm currently available for freelance projects and technical consulting. 
+        Whether you need a custom web application, an SEO audit, or performance optimization, let's talk!
+      </p>
+    </div>
+    <div class="flex justify-center gap-4">
+      <a href="mailto:me@arisris.com" class="px-8 py-4 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-black font-bold rounded-lg hover:scale-105 transition-transform shadow-lg">
+        Get in Touch
+      </a>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,78 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("posts", ({ data }) => {
+  return data.status === "published";
+});
+
+// Sort by date descending
+const sortedPosts = posts.sort(
+  (a, b) => b.data.createdAt.valueOf() - a.data.createdAt.valueOf()
+);
+
+// Extract all unique tags
+const allTags = [...new Set(sortedPosts.flatMap((post) => post.data.tags || []))].sort();
+---
+
+<Layout title="All Posts — Arisris" description="Read my latest thoughts on web development, Jamstack, and more.">
+  <div class="py-12 md:py-20 space-y-12">
+    <header class="space-y-4">
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">
+        Articles.
+      </h1>
+      <p class="text-xl text-neutral-500 dark:text-neutral-400 max-w-2xl">
+        Thoughts, tutorials, and miscellaneous writes about the modern web.
+      </p>
+    </header>
+
+    {/* Tags Filter Bar */}
+    <div class="flex flex-wrap gap-2 py-4 border-y border-neutral-100 dark:border-neutral-800">
+      <span class="text-sm font-bold text-neutral-400 dark:text-neutral-500 self-center mr-2">Tags:</span>
+      {allTags.map(tag => (
+        <a 
+          href={`/tags/${tag}`}
+          class="px-3 py-1 bg-neutral-100 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 text-xs font-bold rounded-full hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 transition-colors"
+        >
+          #{tag}
+        </a>
+      ))}
+    </div>
+
+    {/* Posts Grid */}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {sortedPosts.map((post) => (
+        <article class="group flex flex-col space-y-4">
+          <a href={`/posts/${post.id}`} class="aspect-video overflow-hidden rounded-2xl border border-neutral-100 dark:border-neutral-800 shadow-sm block">
+            <img 
+              src={post.data.image} 
+              alt={post.data.title} 
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          </a>
+          <div class="space-y-2">
+            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 dark:text-blue-500 uppercase tracking-widest">
+              <time datetime={post.data.createdAt.toISOString()}>
+                {post.data.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+              </time>
+              <span>•</span>
+              <span>{post.data.tags?.[0] || 'Article'}</span>
+            </div>
+            <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-50 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+              <a href={`/posts/${post.id}`}>{post.data.title}</a>
+            </h2>
+            <p class="text-neutral-600 dark:text-neutral-400 line-clamp-2">
+              {post.data.description}
+            </p>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    {sortedPosts.length === 0 && (
+      <div class="py-20 text-center">
+        <p class="text-neutral-500">No posts found yet. Check back soon!</p>
+      </div>
+    )}
+  </div>
+</Layout>

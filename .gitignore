@@ -3,6 +3,8 @@ node_modules/
 .astro/
 .vscode/.bak
 .wrangler/
+dist/
 
 # Files
 .env
+.env.production

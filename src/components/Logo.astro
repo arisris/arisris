@@ -1,0 +1,16 @@
+---
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<a href="/" class:list={["flex flex-col items-center select-none", className]}>
+  <strong class="block text-xl md:hidden">&lt;AR/&gt;</strong>
+  <strong class="hidden md:block text-2xl underline text-nowrap">
+    Arisris
+  </strong>
+  <span class="hidden md:block text-[.5rem] italic ml-auto -mt-1">
+    Personal Blog
+  </span>
+</a>

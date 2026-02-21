@@ -1,0 +1,252 @@
+---
+import Logo from "../components/Logo.astro";
+import { darkModeScript } from "../lib/darkModeScript";
+import { ClientRouter } from "astro:transitions";
+import "../styles/global.css";
+
+type MenuItem = {
+  title: string;
+  href?: string;
+  submenu?: Omit<MenuItem, "submenu">[];
+};
+
+interface Props {
+  title?: string;
+  description?: string;
+  noParent?: boolean;
+  menuItems?: MenuItem[];
+  mainClass?: string;
+  parentClass?: string;
+}
+
+const defaultMenuItems: MenuItem[] = [
+  { title: "Home", href: "/" },
+  { title: "About", href: "/about" },
+  { title: "Contact", href: "/contact" },
+];
+
+const {
+  title = "Arisris — Personal Blog",
+  description = "Personal blog by Arisris",
+  noParent,
+  menuItems = [],
+  mainClass,
+  parentClass,
+} = Astro.props;
+
+const mergedMenuItems: MenuItem[] = [...defaultMenuItems, ...menuItems];
+
+const hasSearchSlot = Astro.slots.has("searchForm");
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/static/icon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/static/icon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/static/icon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/static/icon/site.webmanifest" />
+    <meta
+      name="google-site-verification"
+      content="HqRlPHb6rKQHLdM0ifiL0wHexR1qaUVFr_5f0dr0bKI"
+    />
+    <title>{title}</title>
+    <ClientRouter />
+    <script
+      is:inline
+      set:html={darkModeScript({ isAstroViewTransition: true })}
+    />
+    <script
+      is:inline
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+    <slot name="head" />
+  </head>
+
+  <body class="antialiased">
+    <section class="flex flex-col min-h-screen">
+      <header class="relative block border-b">
+        <nav
+          class="group max-w-5xl mx-auto flex flex-col md:items-center md:flex-row md:justify-between"
+        >
+          <div class="flex items-center gap-x-4 px-4 py-2 md:p-2 md:grow">
+            <Logo class="px-2 md:py-2" />
+
+            {hasSearchSlot && <slot name="searchForm" />}
+
+            <div class="md:hidden ml-auto flex items-center gap-x-6">
+              <label
+                for="nav-toggle"
+                role="button"
+                class="inline-flex items-center justify-start w-6 h-6 md:hidden select-none"
+              >
+                <span
+                  class="iconify ri--menu-fill group-has-[input[id=nav-toggle]:checked]:ri--close-large-fill w-6 h-6"
+                ></span>
+                <span class="sr-only">Toggle Menu</span>
+              </label>
+            </div>
+          </div>
+
+          <input id="nav-toggle" type="checkbox" class="hidden peer" />
+
+          <div
+            class="flex flex-col md:flex-row gap-4 bg-inherit md:px-4 transition-[height] duration-300 h-0 peer-checked:h-64 md:h-auto md:peer-checked:checked:h-auto max-md:overflow-hidden"
+          >
+            <ul class="flex flex-col md:flex-row">
+              {
+                mergedMenuItems.map((item) =>
+                  item.submenu ? (
+                    <li class="relative flex flex-col">
+                      <details class="group" data-closable>
+                        <summary class="cursor-pointer flex justify-between items-center gap-x-1 px-4 py-2 select-none hover:rounded hover:bg-indigo-100/50 group-open:bg-indigo-100/50 dark:hover:bg-indigo-900/20 group-open:dark:bg-indigo-900/20">
+                          {item.title}
+                          <span class="iconify ri--arrow-drop-down-line group-open:rotate-180 w-6 h-6" />
+                        </summary>
+                        <ul class="hidden group-open:block md:group-open:absolute md:group-open:z-10 p-2 md:right-2 md:top-11 md:w-48 md:rounded md:border md:bg-neutral-100 dark:bg-neutral-950">
+                          {item.submenu.map((child, index) => (
+                            <li tabindex={index}>
+                              <a
+                                href={child.href}
+                                class="block px-4 py-2 md:text-sm hover:rounded hover:bg-indigo-100/50 dark:hover:bg-indigo-900/20"
+                              >
+                                {child.title}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </details>
+                    </li>
+                  ) : (
+                    <li>
+                      {item.href ? (
+                        <a
+                          href={item.href}
+                          class="block px-4 py-2 hover:rounded hover:bg-indigo-100/50 dark:hover:bg-indigo-900/20"
+                        >
+                          {item.title}
+                        </a>
+                      ) : (
+                        <span class="block px-4 py-2 hover:rounded hover:bg-indigo-100/50 dark:hover:bg-indigo-900/20">
+                          {item.title}
+                        </span>
+                      )}
+                    </li>
+                  ),
+                )
+              }
+            </ul>
+          </div>
+        </nav>
+      </header>
+
+      <main class:list={["flex-auto", mainClass]}>
+        {
+          noParent ? (
+            <slot />
+          ) : (
+            <div class:list={["max-w-5xl mx-auto p-2", parentClass]}>
+              <slot />
+            </div>
+          )
+        }
+      </main>
+
+      <footer class="border-t">
+        <div
+          class="max-w-5xl mx-auto flex flex-col-reverse md:flex-row md:items-center md:justify-between p-4 gap-8"
+        >
+          <div class="flex items-center justify-between grow gap-x-8">
+            <div class="flex items-center flex-nowrap text-nowrap gap-x-2">
+              <span>&copy;{new Date().getFullYear()}</span>
+              <a
+                href="https://github.com/arisris/arisris.com"
+                class="hover:underline"
+              >
+                Arisris
+              </a>
+            </div>
+            <div class="flex items-center gap-x-4">
+              {
+                [
+                  ["ri--github-fill", "https://github.com/arisris", "Github"],
+                  [
+                    "ri--linkedin-fill text-blue-500",
+                    "https://linkedin.com/in/arisris",
+                    "LinkedIn",
+                  ],
+                  [
+                    "ri--facebook-fill text-blue-600",
+                    "https://facebook.com/arisfungratis",
+                    "Facebook",
+                  ],
+                ].map(([icon, href, title]) => (
+                  <a
+                    href={href}
+                    title={title}
+                    class="flex items-center hover:underline hover:scale-105"
+                  >
+                    <span class:list={["iconify", icon, "size-6"]} />
+                    <span class="sr-only">{title}</span>
+                  </a>
+                ))
+              }
+            </div>
+          </div>
+
+          <div
+            class="flex items-start md:items-center md:flex-row-reverse justify-between text-nowrap gap-x-8"
+          >
+            <ul class="flex flex-col md:flex-row md:items-center gap-x-4">
+              <li>
+                <a href="/pages/privacy-policy" class="hover:underline"
+                  >Privacy Policy</a
+                >
+              </li>
+              <li>
+                <a href="/pages/terms-of-service" class="hover:underline"
+                  >Terms of Service</a
+                >
+              </li>
+              <li>
+                <a href="/pages/disclaimer" class="hover:underline"
+                  >Disclaimer</a
+                >
+              </li>
+            </ul>
+            <button
+              type="button"
+              title="Toggle Theme"
+              id="toggle-theme"
+              class="flex items-center justify-center rounded-full cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-800 p-2 transition-colors"
+            >
+              <span class="iconify ri--moon-line dark:hidden size-6"></span>
+              <span
+                class="iconify ri--sun-line hidden dark:block dark:text-yellow-500 size-6"
+              ></span>
+              <span class="sr-only">Toggle Theme</span>
+            </button>
+          </div>
+        </div>
+      </footer>
+    </section>
+  </body>
+</html>

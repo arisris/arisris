@@ -1,0 +1,129 @@
+---
+type AdminMenuItem = {
+  href: string;
+  title: string;
+  icon?: string;
+  isActive?: boolean;
+  submenu?: [string, string][];
+}[];
+
+interface Props {
+  menuItems?: AdminMenuItem;
+  currentPath?: string;
+}
+
+const defaultAdminMenus: AdminMenuItem = [];
+
+const { menuItems = [], currentPath } = Astro.props;
+
+const menus: AdminMenuItem = [...defaultAdminMenus, ...menuItems];
+---
+
+<div class="flex absolute inset-0 p-2 max-w-5xl mx-auto">
+  <input type="checkbox" id="admin-aside" class="hidden peer" />
+
+  <aside class="flex flex-col justify-between whitespace-nowrap overflow-hidden transition-[width] duration-300 ease-in-out w-0 peer-checked:w-56 peer-checked:border-r md:w-56 md:border-r md:peer-checked:w-0 md:peer-checked:border-none">
+    <div class="flex items-center gap-2 border-b p-2">
+      <h3 class="text-xl font-bold">Admin Panel</h3>
+    </div>
+
+    <menu class="flex flex-col gap-y-1 mb-auto p-2">
+      {menus.map((item) => (
+        <li>
+          {item.submenu ? (
+            <details
+              class="group"
+              open={currentPath?.startsWith(item.href) || item.isActive}
+            >
+              <summary class="flex items-center gap-x-2 p-2 cursor-pointer select-none hover:bg-indigo-100/50 group-open:bg-indigo-100/50 dark:hover:bg-indigo-900/20 group-open:dark:bg-indigo-900/20">
+                <span
+                  class:list={["iconify", item.icon ?? "ri--folder-line", "w-4 h-4"]}
+                  data-inline="false"
+                />
+                <span>{item.title}</span>
+                <span
+                  class="iconify ri--arrow-down-s-line group-open:rotate-180 w-4 h-4 ml-auto"
+                  data-inline="false"
+                />
+              </summary>
+              <ul class="flex flex-col pl-2 my-1">
+                {item.submenu.map(([href, title]) => (
+                  <li class="border-l">
+                    <a
+                      href={href}
+                      class="flex items-center gap-x-2 w-full p-2 hover:rounded hover:bg-indigo-100/50 dark:hover:bg-indigo-900/20 text-sm"
+                    >
+                      <span
+                        class="iconify ri--link w-4 h-4"
+                        data-inline="false"
+                      />
+                      <span>{title}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ) : (
+            <a
+              href={item.href}
+              class:list={[
+                "flex items-center gap-x-2 w-full p-2 hover:rounded hover:bg-indigo-100/50 dark:hover:bg-indigo-900/20",
+                {
+                  "bg-indigo-100/80 dark:bg-indigo-900/40 text-blue-700 dark:text-blue-300 font-medium":
+                    item.isActive || currentPath === item.href,
+                },
+              ]}
+            >
+              <span
+                class:list={["iconify", item.icon ?? "ri--arrow-drop-right-line", "w-4 h-4"]}
+                data-inline="false"
+              />
+              <span>{item.title}</span>
+            </a>
+          )}
+        </li>
+      ))}
+    </menu>
+
+    <div class="flex flex-col gap-y-1 border-t p-2">
+      <a
+        href="/dash/settings"
+        class:list={[
+          "flex items-center gap-x-2 w-full p-2 hover:rounded hover:bg-indigo-100/50 dark:hover:bg-indigo-900/20",
+          {
+            "bg-indigo-100/80 dark:bg-indigo-900/40 text-blue-700 dark:text-blue-300 font-medium":
+              currentPath === "/dash/settings",
+          },
+        ]}
+      >
+        <span class="iconify ri--settings-line w-4 h-4"></span>
+        <span>Settings</span>
+      </a>
+      <a
+        href="/api/auth/signout?redirect_to=/"
+        class="flex items-center gap-x-2 w-full p-2 hover:rounded hover:bg-indigo-100/50 dark:hover:bg-indigo-900/20"
+      >
+        <span class="iconify ri--logout-box-line w-4 h-4"></span>
+        <span>Signout</span>
+      </a>
+    </div>
+  </aside>
+
+  <label
+    for="admin-aside"
+    class="flex items-center justify-center w-1 cursor-pointer"
+  >
+    <div
+      role="button"
+      title="Collapse Menu"
+      class="flex items-center justify-center cursor-pointer text-blue-600 dark:text-blue-400 w-6 h-6 rounded-full hover:bg-indigo-100/50 dark:hover:bg-indigo-900/30 transition-all hover:scale-110"
+    >
+      <span class="iconify ri--arrow-left-wide-line rotate-180 md:rotate-0 group-has-[input[id=admin-aside]:checked]/admin:rotate-0 md:group-has-[input[id=admin-aside]:checked]/admin:rotate-180 w-6 h-6"></span>
+      <span class="sr-only">&lt;&lt;</span>
+    </div>
+  </label>
+
+  <div class="flex-1 overflow-hidden py-2 px-0 md:px-2 group-has-[input[id=admin-aside]:checked]/admin:px-2 md:group-has-[input[id=admin-aside]:checked]/admin:px-0">
+    <slot />
+  </div>
+</div>
