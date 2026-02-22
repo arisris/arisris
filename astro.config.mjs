@@ -11,10 +11,13 @@ export default defineConfig({
     "/code": "/posts",
     "/guestbook": "/contact",
   },
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    imageService: "compile",
+    sessionKVBindingName: "SESSION",
+  }),
   devToolbar: {
     enabled: true,
-    placement: "bottom-right"
+    placement: "bottom-right",
   },
   vite: {
     plugins: [tailwindcss()],
