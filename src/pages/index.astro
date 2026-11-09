@@ -1,171 +1,246 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { getCollection, getEntry } from "astro:content";
 
-// Fetch author data
-const author = await getEntry("author", "author");
-
-// Fetch latest blog posts
-const posts = await getCollection("posts", ({ data }) => {
-  return data.status === "published";
-});
-
-// Sort by date descending
-const latestPosts = posts
-  .sort((a, b) => b.data.createdAt.valueOf() - a.data.createdAt.valueOf())
-  .slice(0, 3);
-
-// Featured projects (references to GitHub stats or just hardcoded from old site)
-const projects = [
+const apps = [
   {
-    name: "Abret",
-    description: "High-performance Bun.serve HTTP Routing framework.",
-    link: "https://github.com/arisris/abret",
-    tags: ["bun", "serve", "http", "routing"],
+    name: "4G LTE Switcher 2",
+    pkg: "com.kliksob.forgswitch2",
+    desc: "Force 4G LTE only — 1M+ installs • 3.7k reviews • switcher & speed test for weak signal areas.",
+    link: "https://play.google.com/store/apps/details?id=com.kliksob.forgswitch2&hl=en",
+    icon: "/static/apps/forgswitch2.png",
+    badge: "1M+",
+    tags: ["android", "tools", "4G"],
   },
   {
-    name: "Create BV Pages",
-    description: "Cloudflare pages fullstack project template using hono & vite.",
-    link: "https://github.com/arisris/create-bv-pages",
-    tags: ["cloudflare", "pages", "hono", "vite"],
+    name: "VolApp",
+    pkg: "com.arisris.android.volapp",
+    desc: "Volume button broken? Fix with on-screen slider — ringer/vibrate/silent in one tap, no ads.",
+    link: "https://play.google.com/store/apps/details?id=com.arisris.android.volapp&hl=en",
+    icon: "/static/apps/volapp.jpg",
+    badge: "1K+",
+    tags: ["android", "audio", "utility"],
   },
   {
-    name: "Next-Toko",
-    description: "Simple E-commerce built with Next.js and Tailwind.",
-    link: "https://github.com/arisris/next-toko",
-    tags: ["next.js", "tailwind", "prisma"],
+    name: "AIO Tools",
+    pkg: "com.arisris.toolsapp",
+    desc: "Calculator, AI Image Creator, Notepad & more in 1 — stop switching apps, all tools bundle.",
+    link: "https://play.google.com/store/apps/details?id=com.arisris.toolsapp&hl=en",
+    icon: "/static/apps/aiotools.png",
+    badge: "new",
+    tags: ["android", "tools", "ai"],
+  },
+  {
+    name: "Lofi Video Music",
+    pkg: "lofi-video-music.arisris.com",
+    desc: "Generate lofi music videos — ambient visuals + chill beats for focus & study, runs on CF Workers.",
+    link: "https://lofi-video-music.arisris.com/",
+    icon: "/static/apps/lofi.svg",
+    badge: "web",
+    tags: ["web", "workers", "audio"],
+  },
+  {
+    name: "Quran App",
+    pkg: "quran-app-five.vercel.app",
+    desc: "Read Quran online — clean PWA, offline-ready, standalone reading experience.",
+    link: "https://quran-app-five.vercel.app/",
+    icon: "/static/apps/quran.png",
+    badge: "web",
+    tags: ["pwa", "quran", "reading"],
+  },
+  {
+    name: "AppLirik",
+    pkg: "applirik.vercel.app",
+    desc: "42k+ song lyrics — Indonesian, dangdut, pop, K-pop & western. Search by title or artist.",
+    link: "https://applirik.vercel.app/",
+    icon: "ri--mic-line",
+    badge: "web",
+    tags: ["web", "lyrics", "nextjs"],
   },
 ];
 ---
 
-<Layout title="Arisris — Personal Blog & Portfolio">
-  {/* Hero Section */}
-  <section class="py-12 md:py-20 border-b">
-    <div class="flex flex-col md:flex-row items-center gap-8 md:gap-12">
-      <div class="md:w-2/3 space-y-6">
-        <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
-          Hi there, I'm <span class="text-blue-600 dark:text-blue-400">Aris Riswanto</span> 👋
-        </h1>
-        <p class="text-lg md:text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl leading-relaxed">
-          A passionate <span class="font-semibold">Jamstack Web Developer</span> from Indonesia. 
-          Building high-performance, secure, and SEO-friendly applications since 2009. 
-          Exploring the future of web development with Astro, Svelte, and Cloudflare.
-        </p>
-        <div class="flex flex-wrap gap-4 pt-4">
-          <a href="/contact" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all shadow-md hover:shadow-lg">
-            Let's Collaborate
+<Layout
+  title="Arisris — Developer • arisris.com"
+  description="Jamstack / Fullstack Engineer since 2009 — Astro • Bun • Cloudflare Workers. 1M+ installs apps, perf & SEO obsessed. Based in Ciamis, ID."
+>
+  {/* Hero — developer terminal */}
+  <section class="py-8 md:py-10">
+    <div class="grid md:grid-cols-[1.15fr_0.85fr] gap-6 items-start">
+      <div class="space-y-4">
+        <div class="inline-flex items-center gap-2 text-xs font-mono text-emerald-600 dark:text-emerald-400">
+          <span class="size-1.5 rounded-full bg-emerald-500"></span> available for freelance
+          <span class="opacity-30">•</span> Ciamis, ID
+        </div>
+        <div>
+          <h1 class="font-mono text-2xl md:text-3xl font-bold tracking-tight leading-tight">
+            Aris Riswanto
+            <span class="block text-sm font-normal opacity-60 mt-1">jamstack / fullstack engineer — since 2009</span>
+          </h1>
+          <p class="mt-3 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400 max-w-xl">
+            Building fast, secure & SEO-friendly apps with <span class="font-mono text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded border">Astro</span> <span class="font-mono text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded border">Bun</span> <span class="font-mono text-xs bg-neutral-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded border">Cloudflare Workers</span>. Obsessed with perf, DX & minimal tooling.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2 pt-1">
+          <a href="mailto:me@arisris.com" class="inline-flex items-center gap-2 px-3.5 py-2 bg-neutral-900 dark:bg-white text-white dark:text-black text-xs font-mono font-medium rounded hover:opacity-90 transition-opacity">
+            <span class="iconify ri--send-plane-line size-3.5"></span> let's collaborate
           </a>
-          <a href="https://github.com/arisris" class="px-6 py-3 border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900 font-medium rounded-lg transition-all">
-            View GitHub
+          <a href="https://github.com/arisris" class="inline-flex items-center gap-2 px-3.5 py-2 border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 text-xs font-mono rounded hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors">
+            <span class="iconify ri--github-line size-3.5"></span> github.com/arisris
           </a>
         </div>
-      </div>
-      <div class="hidden md:w-1/3 md:flex justify-center">
-        <div class="relative group">
-          <div class="absolute -inset-1 bg-linear-to-r from-blue-600 to-indigo-600 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-          <img
-            src="https://avatars.githubusercontent.com/u/62107426?v=4"
-            alt="Aris Riswanto"
-            class="relative size-48 md:size-64 rounded-full object-cover border-4 border-white dark:border-neutral-950 shadow-xl"
-          />
+        <div class="flex flex-wrap gap-1.5 pt-2 font-mono text-[10px] tracking-wide">
+          {["typescript", "astro", "hono", "drizzle", "tailwind", "wrangler"].map(t => (
+            <span class="px-2 py-1 bg-neutral-900 dark:bg-neutral-800 text-neutral-100 rounded">{t}</span>
+          ))}
         </div>
       </div>
-    </div>
-  </section>
 
-  {/* Latest Posts */}
-  <section class="py-12 md:py-16">
-    <div class="flex items-center justify-between mb-8">
-      <h2 class="text-2xl md:text-3xl font-bold">Latest Writing</h2>
-      <a href="/posts" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
-        View all posts →
-      </a>
-    </div>
-
-    {latestPosts.length > 0 ? (
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {latestPosts.map((post) => (
-          <article class="group relative flex flex-col bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-            <div class="aspect-video overflow-hidden">
-              <img 
-                src={post.data.image} 
-                alt={post.data.title} 
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <div class="p-5 flex-1 flex flex-col">
-              <div class="flex items-center gap-2 mb-3 text-xs text-neutral-500 dark:text-neutral-400 font-medium">
-                <time datetime={post.data.createdAt.toISOString()}>
-                  {post.data.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                </time>
-                <span>•</span>
-                <span class="capitalize">{post.data.tags?.[0] || 'Article'}</span>
-              </div>
-              <h3 class="text-xl font-bold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                <a href={`/posts/${post.id}`}>
-                  <span class="absolute inset-0"></span>
-                  {post.data.title}
-                </a>
-              </h3>
-              <p class="text-sm text-neutral-600 dark:text-neutral-400 line-clamp-2 mb-4">
-                {post.data.description}
-              </p>
-            </div>
-          </article>
-        ))}
-      </div>
-    ) : (
-      <div class="py-8 text-center bg-neutral-50 dark:bg-neutral-900/50 rounded-lg border border-dashed">
-        <p class="text-neutral-500">Coming soon! I'm currently migrating my articles.</p>
-      </div>
-    )}
-  </section>
-
-  {/* Projects */}
-  <section class="py-12 md:py-16 bg-neutral-50 dark:bg-neutral-900/50 -mx-4 px-4 md:-mx-8 md:px-8 border-y border-neutral-100 dark:border-neutral-800">
-    <div class="max-w-5xl mx-auto">
-      <div class="flex items-center justify-between mb-8">
-        <h2 class="text-2xl md:text-3xl font-bold">Open Source Work</h2>
-        <a href="https://github.com/arisris?tab=repositories" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">
-          More on GitHub →
-        </a>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {projects.map((project) => (
-          <div class="flex flex-col p-6 bg-white dark:bg-neutral-950 border border-neutral-100 dark:border-neutral-800 rounded-xl hover:border-blue-200 dark:hover:border-blue-900 transition-colors">
-            <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
-              <span class="iconify ri--github-line text-blue-600"></span>
-              <a href={project.link} class="hover:underline">{project.name}</a>
-            </h3>
-            <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4 flex-1">
-              {project.description}
-            </p>
-            <div class="flex flex-wrap gap-2">
-              {project.tags.map(tag => (
-                <span class="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 rounded">
-                  {tag}
-                </span>
-              ))}
-            </div>
+      <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 overflow-hidden bg-white dark:bg-neutral-900 shadow-sm">
+        <div class="flex items-center justify-between px-3 py-2 border-b bg-neutral-50 dark:bg-neutral-900">
+          <div class="flex items-center gap-1.5">
+            <span class="size-2.5 rounded-full bg-red-400"></span>
+            <span class="size-2.5 rounded-full bg-yellow-400"></span>
+            <span class="size-2.5 rounded-full bg-green-400"></span>
           </div>
-        ))}
+          <span class="font-mono text-xs opacity-60">~/whoami.ts — bun</span>
+          <img src="https://avatars.githubusercontent.com/u/62107426?v=4" alt="Aris" class="size-5 rounded-full border" />
+        </div>
+        <div class="relative">
+          {/* ghost — reserves exact height, no CLS */}
+          <pre aria-hidden="true" class="p-3.5 text-xs leading-5 font-mono overflow-x-auto invisible select-none"><code><span class="opacity-60">// profile</span>
+<span class="text-blue-600 dark:text-blue-400">const</span> dev = {"{"}
+  <span class="text-emerald-600">name</span>: <span class="text-amber-600">"Aris Riswanto"</span>,
+  <span class="text-emerald-600">role</span>: <span class="text-amber-600">"Jamstack Engineer"</span>,
+  <span class="text-emerald-600">stack</span>: [<span class="text-amber-600">"Astro"</span>, <span class="text-amber-600">"Bun"</span>, <span class="text-amber-600">"CF Workers"</span>],
+  <span class="text-emerald-600">focus</span>: <span class="text-amber-600">"perf • seo • dx"</span>
+{"}"};
+
+<span class="opacity-60">$ bun run ship</span>
+<span class="text-emerald-600">✓ build 1.6s — 14 pages — edge ready</span></code><span class="inline-block w-2 h-3 ml-0.5 -mb-0.5"></span></pre>
+          <pre class="absolute inset-0 p-3.5 text-xs leading-5 font-mono overflow-x-auto"><code id="terminal-code"><span class="opacity-60">// profile</span>
+<span class="text-blue-600 dark:text-blue-400">const</span> dev = {"{"}
+  <span class="text-emerald-600">name</span>: <span class="text-amber-600">"Aris Riswanto"</span>,
+  <span class="text-emerald-600">role</span>: <span class="text-amber-600">"Jamstack Engineer"</span>,
+  <span class="text-emerald-600">stack</span>: [<span class="text-amber-600">"Astro"</span>, <span class="text-amber-600">"Bun"</span>, <span class="text-amber-600">"CF Workers"</span>],
+  <span class="text-emerald-600">focus</span>: <span class="text-amber-600">"perf • seo • dx"</span>
+{"}"};
+
+<span class="opacity-60">$ bun run ship</span>
+<span class="text-emerald-600">✓ build 1.6s — 14 pages — edge ready</span></code><span id="terminal-cursor" class="inline-block w-2 h-3 bg-neutral-900 dark:bg-white ml-0.5 -mb-0.5 animate-pulse"></span></pre>
+        </div>
+        <script>
+          const codeEl = document.getElementById('terminal-code');
+          const cursor = document.getElementById('terminal-cursor');
+          if (codeEl && cursor && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            const html = codeEl.innerHTML;
+            // tokenize: split into tags vs text
+            const tokens = html.match(/<[^>]+>|[^<]+/g) || [];
+            let out = '';
+            let i = 0;
+            let charPos = 0;
+            let currentToken = '';
+            let inTag = false;
+            codeEl.innerHTML = '';
+            cursor.style.display = 'inline-block';
+
+            function typeNext() {
+              if (i >= tokens.length) {
+                cursor.classList.add('animate-pulse');
+                // blink then fade after 2s
+                setTimeout(() => cursor.style.opacity = '0', 2000);
+                return;
+              }
+              const token = tokens[i];
+              if (token.startsWith('<')) {
+                // instant emit tag
+                out += token;
+                codeEl.innerHTML = out + '<span class="opacity-0">|</span>';
+                i++;
+                charPos = 0;
+                requestAnimationFrame(() => setTimeout(typeNext, 0));
+              } else {
+                if (charPos < token.length) {
+                  out += token[charPos];
+                  codeEl.innerHTML = out;
+                  charPos++;
+                  const ch = token[charPos-1];
+                  // variable speed: punctuation slower, newline pause
+                  let delay = 18 + Math.random()*18;
+                  if (ch === '\n') delay = 80;
+                  if (',;}]'.includes(ch)) delay = 60;
+                  setTimeout(typeNext, delay);
+                } else {
+                  i++;
+                  charPos = 0;
+                  typeNext();
+                }
+              }
+            }
+            // start after short delay
+            setTimeout(typeNext, 400);
+          } else if (cursor) {
+            cursor.style.display = 'none';
+          }
+        </script>
+        <style>
+          @media (prefers-reduced-motion: reduce) { #terminal-cursor { display:none !important; } }
+        </style>
       </div>
     </div>
   </section>
 
-  {/* CTA / About Brief */}
-  <section class="py-16 md:py-24 text-center space-y-8">
-    <div class="max-w-3xl mx-auto space-y-4">
-      <h2 class="text-3xl md:text-4xl font-bold">Interested in working together?</h2>
-      <p class="text-lg text-neutral-600 dark:text-neutral-400">
-        I'm currently available for freelance projects and technical consulting. 
-        Whether you need a custom web application, an SEO audit, or performance optimization, let's talk!
+  {/* Apps — showcase */}
+  <section class="py-8 border-y bg-neutral-50/50 dark:bg-neutral-900/20 -mx-4 px-4 md:-mx-8 md:px-8">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="font-mono text-sm font-bold tracking-tight"><span class="opacity-60">~/</span>apps — showcase</h2>
+        <a href="https://play.google.com/store/apps/dev?id=5253019643775220381" class="font-mono text-xs hover:underline">more →</a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {apps.map((app) => (
+          <a href={app.link} target="_blank" rel="noopener" class="group flex gap-3 p-4 bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-800 rounded-lg hover:border-neutral-300 dark:hover:border-neutral-700 hover:bg-white dark:hover:bg-neutral-800 transition-colors">
+            <div class="shrink-0 size-12 rounded-lg overflow-hidden bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 flex items-center justify-center">
+              {app.icon.includes("/") ? (
+                <img src={app.icon} alt={app.name} class="w-full h-full object-cover" loading="lazy" />
+              ) : (
+                <span class:list={["iconify size-6 opacity-80", app.icon]}></span>
+              )}
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2">
+                <h3 class="font-mono text-xs font-bold line-clamp-1 group-hover:underline underline-offset-2">{app.name}</h3>
+                <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">{app.badge}</span>
+              </div>
+              <p class="font-mono text-[11px] opacity-60 leading-none">{app.pkg}</p>
+              <p class="text-xs leading-relaxed opacity-70 mt-1 line-clamp-2">{app.desc}</p>
+              <div class="flex flex-wrap gap-1 mt-2">
+                {app.tags.map(t => (
+                  <span class="font-mono text-[10px] px-1.5 py-0.5 bg-white dark:bg-neutral-900 border rounded">{t}</span>
+                ))}
+              </div>
+              <span class="inline-flex items-center gap-1 mt-2 font-mono text-[11px] text-blue-600 dark:text-blue-400 group-hover:underline">Open <span class="iconify ri--external-link-line size-3"></span></span>
+            </div>
+          </a>
+        ))}
+      </div>
+      <p class="font-mono text-[11px] opacity-40 mt-3 text-center">more: AIO Tools, 4G PRO, Qur'an Simple — same dev → Play</p>
+    </div>
+  </section>
+
+  {/* CTA */}
+  <section class="py-10 text-center">
+    <div class="max-w-xl mx-auto space-y-3">
+      <p class="font-mono text-xs tracking-widest uppercase opacity-60">— let's build —</p>
+      <h2 class="font-mono text-base md:text-lg font-bold">Have an idea? Let's ship it.</h2>
+      <p class="text-xs leading-relaxed text-neutral-600 dark:text-neutral-400">
+        Freelance & consulting • custom apps • perf & SEO audit
       </p>
     </div>
-    <div class="flex justify-center gap-4">
-      <a href="mailto:me@arisris.com" class="px-8 py-4 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-black font-bold rounded-lg hover:scale-105 transition-transform shadow-lg">
-        Get in Touch
+    <div class="flex justify-center gap-2 pt-4">
+      <a href="mailto:me@arisris.com" class="inline-flex items-center gap-2 px-4 py-2 bg-neutral-900 dark:bg-white text-white dark:text-black font-mono text-xs font-medium rounded hover:opacity-90 transition-opacity">
+        <span class="iconify ri--mail-line size-3.5"></span> me@arisris.com
       </a>
+      <a href="/about" class="inline-flex items-center gap-2 px-4 py-2 border border-neutral-200 dark:border-neutral-800 font-mono text-xs rounded hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors">about →</a>
     </div>
   </section>
 </Layout>

@@ -13,6 +13,8 @@ type MenuItem = {
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  canonical?: string;
   noParent?: boolean;
   menuItems?: MenuItem[];
   mainClass?: string;
@@ -21,13 +23,15 @@ interface Props {
 
 const defaultMenuItems: MenuItem[] = [
   { title: "Home", href: "/" },
+  { title: "Posts", href: "/posts" },
   { title: "About", href: "/about" },
-  { title: "Contact", href: "/contact" },
 ];
 
 const {
   title = "Arisris — Personal Blog",
   description = "Personal blog by Arisris",
+  image,
+  canonical,
   noParent,
   menuItems = [],
   mainClass,
@@ -35,8 +39,12 @@ const {
 } = Astro.props;
 
 const mergedMenuItems: MenuItem[] = [...defaultMenuItems, ...menuItems];
-
 const hasSearchSlot = Astro.slots.has("searchForm");
+
+const site = Astro.site ?? "https://arisris.com";
+const canonicalURL = canonical ?? new URL(Astro.url.pathname, site).href;
+const ogImage = image ? new URL(image, site).href : new URL("/og.png", site).href;
+const ogType = Astro.url.pathname.startsWith("/posts/") ? "article" : "website";
 ---
 
 <!doctype html>
@@ -45,6 +53,19 @@ const hasSearchSlot = Astro.slots.has("searchForm");
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="arisris.com" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="theme-color" content="#ffffff" />
     <link
       rel="apple-touch-icon"
       sizes="180x180"
@@ -67,6 +88,12 @@ const hasSearchSlot = Astro.slots.has("searchForm");
       name="google-site-verification"
       content="HqRlPHb6rKQHLdM0ifiL0wHexR1qaUVFr_5f0dr0bKI"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <title>{title}</title>
     <ClientRouter />
     <script
@@ -83,23 +110,23 @@ const hasSearchSlot = Astro.slots.has("searchForm");
 
   <body class="antialiased">
     <section class="flex flex-col min-h-screen">
-      <header class="relative block border-b">
+      <header class="sticky top-0 z-20 backdrop-blur bg-white/70 dark:bg-neutral-950/70 border-b border-neutral-200 dark:border-neutral-800">
         <nav
-          class="group max-w-5xl mx-auto flex flex-col md:items-center md:flex-row md:justify-between"
+          class="group max-w-4xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between"
         >
-          <div class="flex items-center gap-x-4 px-4 py-2 md:p-2 md:grow">
-            <Logo class="px-2 md:py-2" />
+          <div class="flex items-center gap-x-3 px-4 py-2.5 md:py-3">
+            <Logo />
 
             {hasSearchSlot && <slot name="searchForm" />}
 
-            <div class="md:hidden ml-auto flex items-center gap-x-6">
+            <div class="md:hidden ml-auto flex items-center gap-x-4">
               <label
                 for="nav-toggle"
                 role="button"
-                class="inline-flex items-center justify-start w-6 h-6 md:hidden select-none"
+                class="inline-flex items-center justify-center size-7 rounded border border-neutral-200 dark:border-neutral-800 md:hidden select-none"
               >
                 <span
-                  class="iconify ri--menu-fill group-has-[input[id=nav-toggle]:checked]:ri--close-large-fill w-6 h-6"
+                  class="iconify ri--menu-line size-4"
                 ></span>
                 <span class="sr-only">Toggle Menu</span>
               </label>
@@ -109,24 +136,24 @@ const hasSearchSlot = Astro.slots.has("searchForm");
           <input id="nav-toggle" type="checkbox" class="hidden peer" />
 
           <div
-            class="flex flex-col md:flex-row gap-4 bg-inherit md:px-4 transition-[height] duration-300 h-0 peer-checked:h-64 md:h-auto md:peer-checked:checked:h-auto max-md:overflow-hidden"
+            class="flex flex-col md:flex-row gap-0 bg-white dark:bg-neutral-950 md:bg-transparent md:px-4 transition-[height] duration-200 h-0 peer-checked:h-auto md:h-auto max-md:overflow-hidden border-t md:border-0 border-neutral-100 dark:border-neutral-800"
           >
-            <ul class="flex flex-col md:flex-row">
+            <ul class="flex flex-col md:flex-row font-mono text-xs tracking-wide">
               {
                 mergedMenuItems.map((item) =>
                   item.submenu ? (
                     <li class="relative flex flex-col">
                       <details class="group" data-closable>
-                        <summary class="cursor-pointer flex justify-between items-center gap-x-1 px-4 py-2 select-none hover:rounded hover:bg-indigo-100/50 group-open:bg-indigo-100/50 dark:hover:bg-indigo-900/20 group-open:dark:bg-indigo-900/20">
-                          {item.title}
-                          <span class="iconify ri--arrow-drop-down-line group-open:rotate-180 w-6 h-6" />
+                        <summary class="cursor-pointer flex justify-between items-center gap-x-1 px-4 py-2.5 select-none hover:bg-neutral-100 dark:hover:bg-neutral-900">
+                          <span class="opacity-60">~/</span>{item.title}
+                          <span class="iconify ri--arrow-down-s-line group-open:rotate-180 size-3.5 opacity-60" />
                         </summary>
-                        <ul class="hidden group-open:block md:group-open:absolute md:group-open:z-10 p-2 md:right-2 md:top-11 md:w-48 md:rounded md:border md:bg-neutral-100 dark:bg-neutral-950">
+                        <ul class="hidden group-open:block md:group-open:absolute md:group-open:z-10 p-1.5 md:right-0 md:top-9 md:w-44 rounded-md border bg-white dark:bg-neutral-900 shadow-sm">
                           {item.submenu.map((child, index) => (
                             <li tabindex={index}>
                               <a
                                 href={child.href}
-                                class="block px-4 py-2 md:text-sm hover:rounded hover:bg-indigo-100/50 dark:hover:bg-indigo-900/20"
+                                class="block px-3 py-1.5 text-xs hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded"
                               >
                                 {child.title}
                               </a>
@@ -140,12 +167,12 @@ const hasSearchSlot = Astro.slots.has("searchForm");
                       {item.href ? (
                         <a
                           href={item.href}
-                          class="block px-4 py-2 hover:rounded hover:bg-indigo-100/50 dark:hover:bg-indigo-900/20"
+                          class="block px-4 py-2.5 hover:bg-neutral-100 dark:hover:bg-neutral-900 md:rounded"
                         >
-                          {item.title}
+                          <span class="opacity-60">~/</span>{item.title.toLowerCase()}
                         </a>
                       ) : (
-                        <span class="block px-4 py-2 hover:rounded hover:bg-indigo-100/50 dark:hover:bg-indigo-900/20">
+                        <span class="block px-4 py-2.5">
                           {item.title}
                         </span>
                       )}
@@ -163,87 +190,54 @@ const hasSearchSlot = Astro.slots.has("searchForm");
           noParent ? (
             <slot />
           ) : (
-            <div class:list={["max-w-5xl mx-auto p-2", parentClass]}>
+            <div class:list={["max-w-4xl mx-auto p-2", parentClass]}>
               <slot />
             </div>
           )
         }
       </main>
 
-      <footer class="border-t">
+      <footer class="border-t border-neutral-200 dark:border-neutral-800">
         <div
-          class="max-w-5xl mx-auto flex flex-col-reverse md:flex-row md:items-center md:justify-between p-4 gap-8"
+          class="max-w-4xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between p-4 gap-4 font-mono text-xs"
         >
-          <div class="flex items-center justify-between grow gap-x-8">
-            <div class="flex items-center flex-nowrap text-nowrap gap-x-2">
-              <span>&copy;{new Date().getFullYear()}</span>
-              <a
-                href="https://github.com/arisris/arisris.com"
-                class="hover:underline"
-              >
-                Arisris
-              </a>
-            </div>
-            <div class="flex items-center gap-x-4">
+          <div class="flex items-center gap-3">
+            <span class="opacity-60">©{new Date().getFullYear()} arisris.com</span>
+            <span class="hidden md:inline opacity-20">—</span>
+            <a href="https://github.com/arisris/arisris.com" class="hover:underline opacity-60 hover:opacity-100">src/</a>
+            <span class="inline-flex items-center gap-1 opacity-60">
+              <span class="size-2 rounded-full bg-emerald-500 animate-pulse"></span> online
+            </span>
+          </div>
+          <div class="flex items-center justify-between md:justify-end gap-4">
+            <div class="flex items-center gap-3">
               {
                 [
                   ["ri--github-fill", "https://github.com/arisris", "Github"],
-                  [
-                    "ri--linkedin-fill text-blue-500",
-                    "https://linkedin.com/in/arisris",
-                    "LinkedIn",
-                  ],
-                  [
-                    "ri--facebook-fill text-blue-600",
-                    "https://facebook.com/arisfungratis",
-                    "Facebook",
-                  ],
+                  ["ri--linkedin-fill", "https://linkedin.com/in/arisris", "LinkedIn"],
+                  ["ri--mail-line", "mailto:me@arisris.com", "Email"],
                 ].map(([icon, href, title]) => (
-                  <a
-                    href={href}
-                    title={title}
-                    class="flex items-center hover:underline hover:scale-105"
-                  >
-                    <span class:list={["iconify", icon, "size-6"]} />
+                  <a href={href} title={title} class="opacity-60 hover:opacity-100 transition-opacity">
+                    <span class:list={["iconify", icon, "size-4"]} />
                     <span class="sr-only">{title}</span>
                   </a>
                 ))
               }
             </div>
-          </div>
-
-          <div
-            class="flex items-start md:items-center md:flex-row-reverse justify-between text-nowrap gap-x-8"
-          >
-            <ul class="flex flex-col md:flex-row md:items-center gap-x-4">
-              <li>
-                <a href="/pages/privacy-policy" class="hover:underline"
-                  >Privacy Policy</a
-                >
-              </li>
-              <li>
-                <a href="/pages/terms-of-service" class="hover:underline"
-                  >Terms of Service</a
-                >
-              </li>
-              <li>
-                <a href="/pages/disclaimer" class="hover:underline"
-                  >Disclaimer</a
-                >
-              </li>
-            </ul>
-            <button
-              type="button"
-              title="Toggle Theme"
-              id="toggle-theme"
-              class="flex items-center justify-center rounded-full cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-800 p-2 transition-colors"
-            >
-              <span class="iconify ri--moon-line dark:hidden size-6"></span>
-              <span
-                class="iconify ri--sun-line hidden dark:block dark:text-yellow-500 size-6"
-              ></span>
-              <span class="sr-only">Toggle Theme</span>
-            </button>
+            <div class="flex items-center gap-3">
+              <a href="/pages/privacy-policy" class="hover:underline opacity-60 hover:opacity-100">privacy</a>
+              <a href="/pages/terms-of-service" class="hover:underline opacity-60 hover:opacity-100">terms</a>
+              <button
+                type="button"
+                title="Toggle Theme"
+                id="toggle-theme"
+                class="flex items-center justify-center size-6 rounded border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+              >
+                <span class="iconify ri--moon-line dark:hidden size-3.5"></span>
+                <span class="iconify ri--sun-line hidden dark:block size-3.5"></span>
+                <span class="sr-only">Toggle Theme</span>
+              </button>
+            </div>
           </div>
         </div>
       </footer>

@@ -13,71 +13,101 @@ const skills = [
 ];
 ---
 
-<Layout title="About Aris Riswanto" description="Fullstack Jamstack Developer from Indonesia.">
-  <div class="max-w-4xl mx-auto py-12 md:py-24 space-y-16">
-    
-    {/* Page Header */}
-    <header class="border-b border-neutral-100 dark:border-neutral-800 pb-10">
-      <h1 class="text-4xl md:text-5xl font-bold tracking-tight font-outfit text-neutral-900 dark:text-neutral-50">
-        About <span class="text-blue-600 dark:text-blue-500">Aris Riswanto</span>
-      </h1>
-      <p class="mt-4 text-lg text-neutral-500 dark:text-neutral-400">
-        Web professional focusing on performance and user experience.
+<Layout title="About — Aris Riswanto" description="Jamstack Engineer from Indonesia.">
+  <div class="max-w-3xl mx-auto py-8 space-y-8">
+    {/* Breadcrumb / Title — developer style */}
+    <header class="flex flex-col gap-3 border-b border-neutral-200 dark:border-neutral-800 pb-6">
+      <div class="font-mono text-xs tracking-wide opacity-60">
+        <a href="/" class="hover:underline">~/</a> about
+      </div>
+      <div class="flex items-baseline gap-3">
+        <h1 class="font-mono text-lg md:text-xl font-bold tracking-tight">
+          aris<span class="text-blue-600">@</span>arisris.com:~$ <span class="font-normal opacity-80">cat ABOUT.md</span>
+        </h1>
+        <span class="hidden md:inline-flex size-2 animate-pulse rounded-full bg-emerald-500"></span>
+      </div>
+      <p class="font-mono text-xs leading-relaxed text-neutral-600 dark:text-neutral-400 max-w-2xl">
+        jamstack engineer • perf obsessed • shipping since 2009 — Ciamis, ID
       </p>
     </header>
 
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
-      {/* Sidebar Profile */}
-      <aside class="md:col-span-4 space-y-8">
-        <div class="space-y-6">
-          <img 
-            src={authorEntry?.data.avatar || "/favicon.svg"} 
-            alt="Aris Riswanto" 
-            class="size-40 rounded-2xl object-cover shadow-sm border border-neutral-200 dark:border-neutral-800"
-          />
-          <div class="space-y-4">
-            <div class="flex gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6">
+      {/* Sidebar — compact dev card */}
+      <aside class="space-y-4">
+        <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 overflow-hidden bg-white dark:bg-neutral-900">
+          <div class="flex items-center gap-2 px-3 py-2 border-b bg-neutral-50 dark:bg-neutral-900 font-mono text-xs">
+            <span class="size-2 rounded-full bg-red-400"></span>
+            <span class="size-2 rounded-full bg-yellow-400"></span>
+            <span class="size-2 rounded-full bg-green-400"></span>
+            <span class="ml-auto opacity-60">id — aris</span>
+          </div>
+          <div class="p-4 flex flex-col items-center gap-3">
+            <img
+              src={authorEntry?.data.avatar || "https://avatars.githubusercontent.com/u/62107426?v=4"}
+              alt="Aris Riswanto"
+              class="size-20 rounded-full object-cover border border-neutral-200 dark:border-neutral-800"
+              loading="eager"
+            />
+            <div class="text-center">
+              <p class="font-mono text-xs font-bold">Aris Riswanto</p>
+              <p class="font-mono text-[11px] opacity-60">@arisris • 30s • Majalengka → Ciamis</p>
+            </div>
+            <div class="flex gap-2">
               {authorEntry?.data.social?.github && (
-                <a href={authorEntry.data.social.github} class="text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors">
-                  <span class="iconify ri--github-fill size-6"></span>
+                <a href={authorEntry.data.social.github} class="inline-flex size-7 items-center justify-center rounded border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors">
+                  <span class="iconify ri--github-line size-3.5"></span>
                 </a>
               )}
               {authorEntry?.data.social?.twitter && (
-                <a href={authorEntry.data.social.twitter} class="text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors">
-                  <span class="iconify ri--twitter-x-fill size-6"></span>
+                <a href={authorEntry.data.social.twitter} class="inline-flex size-7 items-center justify-center rounded border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors">
+                  <span class="iconify ri--twitter-x-line size-3.5"></span>
                 </a>
               )}
               {authorEntry?.data.social?.website && (
-                <a href={authorEntry.data.social.website} class="text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors">
-                  <span class="iconify ri--global-line size-6"></span>
+                <a href={authorEntry.data.social.website} class="inline-flex size-7 items-center justify-center rounded border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors">
+                  <span class="iconify ri--global-line size-3.5"></span>
                 </a>
               )}
             </div>
-            
-            <div class="pt-4 border-t border-neutral-100 dark:border-neutral-800">
-              <p class="text-xs font-bold text-neutral-400 uppercase tracking-widest">Base</p>
-              <p class="text-sm font-medium text-neutral-700 dark:text-neutral-300">Ciamis, Indonesia 🇮🇩</p>
-            </div>
           </div>
+          <div class="px-3 py-2 border-t bg-neutral-50 dark:bg-neutral-900/50 font-mono text-[11px] flex justify-between">
+            <span class="opacity-60">base</span><span>Ciamis 🇮🇩</span>
+          </div>
+        </div>
+
+        <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-3 font-mono text-xs">
+          <p class="opacity-60 mb-2">// quick facts</p>
+          <ul class="space-y-1 opacity-80">
+            <li>▸ fulltime fullstack</li>
+            <li>▸ wfh • 1 kid</li>
+            <li>▸ linux • bun • cf</li>
+          </ul>
         </div>
       </aside>
 
-      {/* Content Area */}
-      <main class="md:col-span-8 space-y-12">
-        <div class="prose prose-neutral dark:prose-invert prose-lg max-w-none">
-          {Content ? <Content /> : <p>Bio content loading...</p>}
+      {/* Content */}
+      <main class="space-y-6 min-w-0">
+        <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
+          <div class="px-3 py-2 border-b font-mono text-xs flex items-center gap-2">
+            <span class="iconify ri--markdown-line size-3.5 opacity-60"></span> ABOUT.md
+            <span class="ml-auto opacity-40">{authorEntry?.data.name || "Aris Riswanto"}</span>
+          </div>
+          <div class="p-4 md:p-5 prose prose-sm prose-neutral dark:prose-invert max-w-none prose-p:leading-relaxed prose-p:text-sm prose-headings:font-mono prose-headings:text-sm prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-hr:my-4">
+            {Content ? <Content /> : <p>Bio content loading...</p>}
+          </div>
         </div>
 
-        {/* Technical Arsenal - Minimalist Style */}
-        <section class="space-y-6 pt-10 border-t border-neutral-100 dark:border-neutral-800">
-          <h2 class="text-2xl font-bold font-outfit text-neutral-900 dark:text-neutral-50">Technical Arsenal</h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <section class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 overflow-hidden">
+          <div class="px-3 py-2 border-b bg-neutral-50 dark:bg-neutral-900 font-mono text-xs flex items-center gap-2">
+            <span class="opacity-60">$</span> ls --stack
+          </div>
+          <div class="p-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
             {skills.map(group => (
-              <div class="space-y-3">
-                <h3 class="text-xs font-black text-blue-600 dark:text-blue-500 uppercase tracking-widest">{group.name}</h3>
-                <div class="flex flex-wrap gap-2">
+              <div class="space-y-2">
+                <h3 class="font-mono text-[11px] font-bold tracking-widest uppercase opacity-60">{group.name}</h3>
+                <div class="flex flex-wrap gap-1">
                   {group.items.map(item => (
-                    <span class="px-2.5 py-1 bg-neutral-100 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 text-xs font-medium rounded-md border border-neutral-200 dark:border-neutral-800">
+                    <span class="font-mono text-[11px] px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded">
                       {item}
                     </span>
                   ))}
@@ -89,14 +119,11 @@ const skills = [
       </main>
     </div>
 
-    {/* Footer CTA */}
-    <footer class="pt-20 border-t border-neutral-100 dark:border-neutral-800 text-center">
-      <p class="text-neutral-500 dark:text-neutral-500 text-sm mb-6">Interested in working together?</p>
-      <a href="mailto:me@arisris.com" class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold hover:underline group">
-        Send me an email
-        <span class="iconify ri--arrow-right-line group-hover:translate-x-1 transition-transform"></span>
+    <footer class="flex flex-col md:flex-row items-center justify-between gap-3 pt-4 border-t border-neutral-200 dark:border-neutral-800 font-mono text-xs">
+      <span class="opacity-60">interested? → me@arisris.com • available for freelance</span>
+      <a href="mailto:me@arisris.com" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-neutral-900 dark:bg-white text-white dark:text-black hover:opacity-90 transition-opacity">
+        send email <span class="iconify ri--arrow-right-line size-3.5"></span>
       </a>
     </footer>
-
   </div>
 </Layout>

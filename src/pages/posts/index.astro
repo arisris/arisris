@@ -15,55 +15,36 @@ const sortedPosts = posts.sort(
 const allTags = [...new Set(sortedPosts.flatMap((post) => post.data.tags || []))].sort();
 ---
 
-<Layout title="All Posts — Arisris" description="Read my latest thoughts on web development, Jamstack, and more.">
-  <div class="py-12 md:py-20 space-y-12">
-    <header class="space-y-4">
-      <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-neutral-900 dark:text-neutral-50">
-        Articles.
-      </h1>
-      <p class="text-xl text-neutral-500 dark:text-neutral-400 max-w-2xl">
-        Thoughts, tutorials, and miscellaneous writes about the modern web.
-      </p>
+<Layout title="Posts — arisris.com" description="Writings on web dev, Jamstack, perf.">
+  <div class="py-6 space-y-6">
+    <header class="flex flex-col gap-2 border-b border-neutral-200 dark:border-neutral-800 pb-5">
+      <div class="font-mono text-xs opacity-60"><a href="/" class="hover:underline">~/</a> posts</div>
+      <h1 class="font-mono text-lg font-bold tracking-tight">posts<span class="opacity-40">/</span> <span class="font-normal text-xs opacity-60">{sortedPosts.length} articles</span></h1>
+      <p class="font-mono text-xs opacity-60 max-w-xl">thoughts, tutorials & notes on the modern web — compact, no fluff.</p>
     </header>
 
-    {/* Tags Filter Bar */}
-    <div class="flex flex-wrap gap-2 py-4 border-y border-neutral-100 dark:border-neutral-800">
-      <span class="text-sm font-bold text-neutral-400 dark:text-neutral-500 self-center mr-2">Tags:</span>
+    <div class="flex flex-wrap gap-1.5 py-3 border-y border-neutral-200 dark:border-neutral-800 font-mono text-xs">
+      <span class="opacity-60 self-center mr-1"># tags:</span>
       {allTags.map(tag => (
-        <a 
-          href={`/tags/${tag}`}
-          class="px-3 py-1 bg-neutral-100 dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 text-xs font-bold rounded-full hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 transition-colors"
-        >
-          #{tag}
-        </a>
+        <a href={`/tags/${tag}`} class="px-2 py-1 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded text-[11px] hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors">#{tag.toLowerCase()}</a>
       ))}
     </div>
 
-    {/* Posts Grid */}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
       {sortedPosts.map((post) => (
-        <article class="group flex flex-col space-y-4">
-          <a href={`/posts/${post.id}`} class="aspect-video overflow-hidden rounded-2xl border border-neutral-100 dark:border-neutral-800 shadow-sm block">
-            <img 
-              src={post.data.image} 
-              alt={post.data.title} 
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
+        <article class="group flex gap-3 p-3 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-md hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors">
+          <a href={`/posts/${post.id}`} class="shrink-0 size-16 md:size-20 rounded overflow-hidden bg-neutral-100 dark:bg-neutral-800 block">
+            <img src={post.data.image} alt={post.data.title} class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" loading="lazy" />
           </a>
-          <div class="space-y-2">
-            <div class="flex items-center gap-2 text-xs font-bold text-blue-600 dark:text-blue-500 uppercase tracking-widest">
-              <time datetime={post.data.createdAt.toISOString()}>
-                {post.data.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-              </time>
-              <span>•</span>
-              <span>{post.data.tags?.[0] || 'Article'}</span>
+          <div class="min-w-0 flex-1 space-y-1">
+            <div class="flex items-center gap-1.5 font-mono text-[10px] opacity-60">
+              <time datetime={post.data.createdAt.toISOString()}>{post.data.createdAt.toISOString().slice(0,10)}</time>
+              <span class="px-1 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border text-[10px]">{post.data.tags?.[0]?.toLowerCase() || 'post'}</span>
             </div>
-            <h2 class="text-2xl font-bold text-neutral-900 dark:text-neutral-50 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+            <h2 class="font-mono text-xs font-bold leading-snug line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
               <a href={`/posts/${post.id}`}>{post.data.title}</a>
             </h2>
-            <p class="text-neutral-600 dark:text-neutral-400 line-clamp-2">
-              {post.data.description}
-            </p>
+            <p class="text-[11px] leading-relaxed opacity-70 line-clamp-2">{post.data.description}</p>
           </div>
         </article>
       ))}

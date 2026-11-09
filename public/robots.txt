@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
 Disallow: /cv
+Sitemap: https://arisris.com/sitemap-index.xml

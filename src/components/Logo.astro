@@ -5,12 +5,8 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<a href="/" class:list={["flex flex-col items-center select-none", className]}>
-  <strong class="block text-xl md:hidden">&lt;AR/&gt;</strong>
-  <strong class="hidden md:block text-2xl underline text-nowrap">
-    Arisris
-  </strong>
-  <span class="hidden md:block text-[.5rem] italic ml-auto -mt-1">
-    Personal Blog
-  </span>
+<a href="/" class:list={["flex items-center gap-2 select-none font-mono", className]}>
+  <span class="inline-flex items-center justify-center size-7 rounded bg-neutral-900 dark:bg-white text-white dark:text-black text-xs font-bold">AR</span>
+  <span class="hidden md:inline text-sm font-bold tracking-tight">arisris.com</span>
+  <span class="md:hidden text-sm font-bold">AR</span>
 </a>

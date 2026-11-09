@@ -19,67 +19,75 @@ const { Content } = await render(post);
 const authorEntry = await getEntry("author", "author");
 ---
 
-<Layout title={`${post.data.title} — Arisris`} description={post.data.description}>
-  <article class="max-w-3xl mx-auto py-12 md:py-20 space-y-10">
-    {/* Post Header */}
-    <header class="space-y-6">
-      <div class="flex flex-wrap items-center gap-2 text-xs font-black uppercase tracking-widest text-blue-600 dark:text-blue-500">
-        <a href="/posts" class="hover:underline">Posts</a>
-        <span>/</span>
-        {post.data.tags?.map(tag => (
-          <a href={`/tags/${tag}`} class="hover:underline">#{tag}</a>
-        ))}
-      </div>
-      
-      <h1 class="text-4xl md:text-6xl font-bold font-outfit leading-tight text-neutral-900 dark:text-neutral-50">
+<Layout title={`${post.data.title} — arisris.com`} description={post.data.description}>
+  <article class="max-w-[720px] mx-auto py-6 space-y-6">
+    {/* Breadcrumb */}
+    <div class="font-mono text-xs flex flex-wrap items-center gap-1.5 opacity-60">
+      <a href="/" class="hover:underline">~/</a>
+      <a href="/posts" class="hover:underline">posts</a>
+      <span>/</span>
+      <span class="truncate max-w-[180px]">{post.id}</span>
+      {post.data.tags?.map(tag => (
+        <a href={`/tags/${tag}`} class="ml-1 px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border text-[11px] hover:opacity-100">#{tag.toLowerCase()}</a>
+      ))}
+    </div>
+
+    <header class="space-y-4">
+      <h1 class="font-mono text-lg md:text-xl font-bold tracking-tight leading-snug">
         {post.data.title}
       </h1>
+      <p class="font-mono text-xs leading-relaxed opacity-60 max-w-2xl">{post.data.description}</p>
 
-      <div class="flex items-center gap-4 py-6 border-y border-neutral-100 dark:border-neutral-800">
-        <img 
-          src={authorEntry?.data.avatar || "/favicon.svg"} 
-          alt={authorEntry?.data.name} 
-          class="size-12 rounded-full border border-neutral-200 dark:border-neutral-800"
+      <div class="flex items-center gap-3 py-3 border-y border-neutral-200 dark:border-neutral-800 font-mono text-xs">
+        <img
+          src={authorEntry?.data.avatar || "https://avatars.githubusercontent.com/u/62107426?v=4"}
+          alt={authorEntry?.data.name}
+          class="size-7 rounded-full border"
         />
-        <div class="flex flex-col">
-          <span class="font-bold text-neutral-900 dark:text-neutral-50">{authorEntry?.data.name}</span>
-          <span class="text-xs text-neutral-500">
-            {post.data.createdAt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-            {post.data.updatedAt && ` (Updated: ${post.data.updatedAt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })})`}
+        <div class="flex flex-col leading-tight">
+          <span class="font-medium">{authorEntry?.data.name}</span>
+          <span class="text-[11px] opacity-60">
+            {post.data.createdAt.toISOString().slice(0,10)}
+            {post.data.updatedAt && ` • upd ${post.data.updatedAt.toISOString().slice(0,10)}`}
+            <span class="opacity-40"> • {Math.ceil(post.data.description.length / 500 + 5)} min</span>
           </span>
         </div>
+        <a href="/posts" class="ml-auto hidden md:inline-flex items-center gap-1 px-2.5 py-1 rounded border text-[11px] hover:bg-neutral-50 dark:hover:bg-neutral-900">
+          <span class="iconify ri--arrow-left-line size-3"></span> back
+        </a>
       </div>
     </header>
 
-    {/* Hero Image */}
-    <div class="aspect-video rounded-3xl overflow-hidden shadow-2xl border border-neutral-200 dark:border-neutral-800">
-      <img 
-        src={post.data.image} 
-        alt={post.data.title} 
-        class="w-full h-full object-cover"
-      />
+    <div class="mx-auto max-w-[560px] rounded-md overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900">
+      <img src={post.data.image} alt={post.data.title} class="w-full aspect-[16/9] max-h-[280px] object-cover" loading="eager" />
     </div>
 
-    {/* Content */}
-    <main class="prose prose-neutral dark:prose-invert prose-lg max-w-none 
-      prose-headings:font-outfit prose-headings:font-bold prose-headings:tracking-tight
-      prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
-      prose-img:rounded-2xl prose-img:border prose-img:border-neutral-200 dark:prose-img:border-neutral-800">
-      <Content />
+    <main class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 overflow-hidden">
+      <div class="px-3 py-2 border-b bg-neutral-50 dark:bg-neutral-900 font-mono text-xs flex items-center gap-2">
+        <span class="iconify ri--markdown-line size-3.5 opacity-60"></span> {post.id}.md
+        <span class="ml-auto opacity-40">prose</span>
+      </div>
+      <div class="p-4 md:p-5 prose prose-sm prose-neutral dark:prose-invert max-w-none
+        prose-headings:font-mono prose-headings:text-sm prose-headings:font-bold prose-headings:tracking-tight
+        prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-a:underline-offset-2 hover:prose-a:underline
+        prose-code:font-mono prose-code:text-xs prose-code:bg-neutral-100 dark:prose-code:bg-neutral-800 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:border prose-code:font-normal
+        prose-pre:bg-neutral-950 dark:prose-pre:bg-black prose-pre:rounded-lg prose-pre:border prose-pre:text-xs
+        prose-img:rounded-lg prose-img:border prose-li:text-sm prose-p:text-sm prose-p:leading-relaxed">
+        <Content />
+      </div>
     </main>
 
-    {/* Footer / Sharing (Simplified) */}
-    <footer class="pt-12 mt-12 border-t border-neutral-100 dark:border-neutral-800 flex justify-between items-center">
-      <a href="/posts" class="flex items-center gap-2 text-sm font-bold text-neutral-500 hover:text-blue-600 transition-colors">
-        <span class="iconify ri--arrow-left-line"></span>
-        Back to articles
+    <footer class="flex items-center justify-between pt-4 border-t border-neutral-200 dark:border-neutral-800 font-mono text-xs">
+      <a href="/posts" class="inline-flex items-center gap-1 opacity-60 hover:opacity-100">
+        <span class="iconify ri--arrow-left-line size-3.5"></span> back to posts
       </a>
-      <div class="flex gap-4">
-        <button class="text-neutral-400 hover:text-blue-400 transition-colors" title="Share on Twitter">
-          <span class="iconify ri--twitter-x-fill size-5"></span>
+      <div class="flex items-center gap-2">
+        <span class="opacity-40 hidden md:inline">share:</span>
+        <button class="size-7 rounded border hover:bg-neutral-50 dark:hover:bg-neutral-900 flex items-center justify-center" title="Share on X">
+          <span class="iconify ri--twitter-x-line size-3.5"></span>
         </button>
-        <button class="text-neutral-400 hover:text-blue-600 transition-colors" title="Copy Link">
-          <span class="iconify ri--link size-5"></span>
+        <button class="size-7 rounded border hover:bg-neutral-50 dark:hover:bg-neutral-900 flex items-center justify-center" title="Copy link">
+          <span class="iconify ri--link size-3.5"></span>
         </button>
       </div>
     </footer>
