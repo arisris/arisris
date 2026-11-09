@@ -1,7 +1,7 @@
 ---
 id: arisris
 name: Aris Riswanto
-avatar: /static/documents/avatar.png
+avatar: https://avatars.githubusercontent.com/u/62107426?v=4
 social:
   twitter: https://x.com/arisris
   github: https://github.com/arisris

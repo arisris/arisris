@@ -1,7 +1,7 @@
 ---
 title: Building a Modern Personal Website with Astro 5
 description: Why I decided to migrate my personal site to Astro and the lessons learned along the way about content layer and performance.
-author: arisris
+author: author
 image: https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=2070&auto=format&fit=crop
 status: published
 tags: ["Astro", "Web Dev", "Performance"]
